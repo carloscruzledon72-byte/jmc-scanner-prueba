@@ -151,7 +151,68 @@ btnFoto.addEventListener("click", () => ;
     fotoEtiqueta.click();
 });
 
-fotoEtiqueta.addEventListener("change", () => {fotoEtiqueta.addEventListener("change", async () => {
+fotoEtiqueta.addEventListener("change", async () => {
+    const archivo = fotoEtiqueta.files[0];
+    if (!archivo) return;
+
+    estado.textContent = "Preparando foto...";
+
+    try {
+        const img = new Image();
+        const url = URL.createObjectURL(archivo);
+
+        img.onload = async () => {
+            try {
+                const maxAncho = 1280;
+                const escala = Math.min(1, maxAncho / img.width);
+
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.round(img.width * escala);
+                canvas.height = Math.round(img.height * escala);
+
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+                canvas.toBlob(async (blob) => {
+                    try {
+                        const fotoReducida = new File(
+                            [blob],
+                            "etiqueta.jpg",
+                            { type: "image/jpeg" }
+                        );
+
+                        estado.textContent = "Analizando etiqueta...";
+
+                        const lectorFoto = new Html5Qrcode("reader");
+                        const resultado = await lectorFoto.scanFile(
+                            fotoReducida,
+                            true
+                        );
+
+                        codigo.value = resultado;
+                        estado.textContent = "Código leído: " + resultado;
+
+                    } catch (error) {
+                        estado.textContent =
+                            "No pude leer el código de la foto";
+                        console.log(error);
+                    }
+
+                    fotoEtiqueta.value = "";
+                }, "image/jpeg", 0.75);
+
+            } finally {
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        img.src = url;
+
+    } catch (error) {
+        estado.textContent = "Error procesando la foto";
+        console.log(error);
+    }
+});
     const archivo = fotoEtiqueta.files[0];
 
     if (!archivo) return;
