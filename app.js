@@ -148,6 +148,7 @@ const btnFoto = document.getElementById("btnFoto");
 const fotoEtiqueta = document.getElementById("fotoEtiqueta");
 
 btnFoto.addEventListener("click", () => {
+    alert("BOTON FOTO FUNCIONA");
     fotoEtiqueta.click();
 });
 
