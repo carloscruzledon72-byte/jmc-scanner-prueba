@@ -147,15 +147,28 @@ btnGuardar.addEventListener("click", function () {
 const btnFoto = document.getElementById("btnFoto");
 const fotoEtiqueta = document.getElementById("fotoEtiqueta");
 
-btnFoto.addEventListener("click", () => {
-    alert("BOTON FOTO FUNCIONA");
+btnFoto.addEventListener("click", () => ;
     fotoEtiqueta.click();
 });
 
-fotoEtiqueta.addEventListener("change", () => {
+fotoEtiqueta.addEventListener("change", () => {fotoEtiqueta.addEventListener("change", async () => {
     const archivo = fotoEtiqueta.files[0];
 
     if (!archivo) return;
 
-    estado.textContent = "Foto seleccionada correctamente";
+    estado.textContent = "Analizando etiqueta...";
+
+    try {
+        const lectorFoto = new Html5Qrcode("reader");
+        const resultado = await lectorFoto.scanFile(archivo, true);
+
+        codigo.value = resultado;
+        estado.textContent = "Código leído: " + resultado;
+
+    } catch (error) {
+        estado.textContent = "No pude leer el código de la foto";
+        console.log(error);
+    }
+
+    fotoEtiqueta.value = "";
 });
