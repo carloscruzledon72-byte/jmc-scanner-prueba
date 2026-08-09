@@ -144,3 +144,17 @@ btnGuardar.addEventListener("click", function () {
     console.log(error);
   });
 });
+const btnFoto = document.getElementById("btnFoto");
+const fotoEtiqueta = document.getElementById("fotoEtiqueta");
+
+btnFoto.addEventListener("click", () => {
+    fotoEtiqueta.click();
+});
+
+fotoEtiqueta.addEventListener("change", () => {
+    const archivo = fotoEtiqueta.files[0];
+
+    if (!archivo) return;
+
+    estado.textContent = "Foto seleccionada correctamente";
+});
