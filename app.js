@@ -20,11 +20,11 @@ function iniciarEscaner() {
   }
 
   const configuracion = {
-    fps: 15,
+    fps: 30,
     qrbox: function(viewfinderWidth, viewfinderHeight) {
       return {
-        width: Math.floor(viewfinderWidth * 0.9),
-        height: Math.floor(viewfinderHeight * 0.35)
+        width: Math.floor(viewfinderWidth * 1.2),
+        height: Math.floor(viewfinderHeight * 0.5)
       };
     },
     aspectRatio: 1.777778,
