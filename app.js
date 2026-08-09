@@ -1,4 +1,5 @@
 const btnEscanear = document.getElementById("btnEscanear");
+const btnDificil = document.getElementById("btnDificil");
 const btnGuardar = document.getElementById("btnGuardar");
 
 const codigo = document.getElementById("codigo");
@@ -10,7 +11,7 @@ const estado = document.getElementById("estado");
 let scanner = null;
 
 btnEscanear.addEventListener("click", iniciarEscaner);
-
+btnDificil.addEventListener("click", iniciarCodigoDificil);
 function iniciarEscaner() {
   estado.textContent = "Abriendo cámara...";
 
@@ -56,6 +57,61 @@ function iniciarEscaner() {
     estado.textContent = "Error al abrir la cámara";
     console.log(err);
   });
+}
+async function iniciarCodigoDificil() {
+
+    estado.textContent = "Abriendo lector especial...";
+
+    const readerDiv = document.getElementById("reader");
+
+    readerDiv.innerHTML = `
+        <video id="videoZX"
+               autoplay
+               playsinline
+               style="width:100%; max-height:420px;">
+        </video>
+    `;
+
+    const video = document.getElementById("videoZX");
+
+    try {
+
+        const lectorZX = new ZXingBrowser.BrowserMultiFormatReader();
+
+        await lectorZX.decodeFromConstraints(
+            {
+                video: {
+                    facingMode: { ideal: "environment" },
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 }
+                }
+            },
+            video,
+            function(result, error, controls) {
+
+                if (result) {
+
+                    codigo.value = result.getText();
+
+                    estado.textContent =
+                        "Código leído correctamente";
+
+                    controls.stop();
+
+                    readerDiv.innerHTML = "";
+                }
+            }
+        );
+
+    } catch (error) {
+
+        console.log(error);
+
+        estado.textContent =
+            "Error en lector especial";
+
+        readerDiv.innerHTML = "";
+    }
 }
 btnGuardar.addEventListener("click", function () {
   if (codigo.value.trim() === "") {
